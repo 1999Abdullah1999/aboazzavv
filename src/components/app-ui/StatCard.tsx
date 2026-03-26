@@ -6,32 +6,40 @@ interface StatCardProps {
   subtitle?: string;
 }
 
-const colorMap = {
-  green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
-  red: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
-  blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-  orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
-  purple: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
+const gradientMap = {
+  green: 'from-emerald-500 to-teal-600',
+  red: 'from-rose-500 to-pink-600',
+  blue: 'from-blue-500 to-indigo-600',
+  orange: 'from-amber-500 to-orange-600',
+  purple: 'from-purple-500 to-violet-600',
 };
 
-const textColorMap = {
-  green: 'text-green-700 dark:text-green-400',
-  red: 'text-red-700 dark:text-red-400',
-  blue: 'text-blue-700 dark:text-blue-400',
-  orange: 'text-orange-700 dark:text-orange-400',
-  purple: 'text-purple-700 dark:text-purple-400',
+const glowMap = {
+  green: 'shadow-emerald-500/25',
+  red: 'shadow-rose-500/25',
+  blue: 'shadow-blue-500/25',
+  orange: 'shadow-amber-500/25',
+  purple: 'shadow-purple-500/25',
 };
 
 export default function StatCard({ icon, title, value, color, subtitle }: StatCardProps) {
   return (
-    <div className={`rounded-2xl border p-5 ${colorMap[color]}`}>
-      <div className="flex items-start justify-between">
+    <div
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradientMap[color]} p-5 shadow-lg ${glowMap[color]} transition-transform duration-200 hover:scale-[1.02]`}
+    >
+      {/* Decorative circles */}
+      <div className="absolute -top-4 -left-4 h-20 w-20 rounded-full bg-white/10" />
+      <div className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-white/10" />
+      
+      <div className="relative flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{title}</p>
-          <p className={`text-2xl font-bold mt-1 ${textColorMap[color]}`}>{value}</p>
-          {subtitle && <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{subtitle}</p>}
+          <p className="text-sm text-white/80 font-medium">{title}</p>
+          <p className="text-2xl font-bold mt-1.5 text-white">{value}</p>
+          {subtitle && <p className="text-xs text-white/60 mt-1">{subtitle}</p>}
         </div>
-        <span className="text-3xl">{icon}</span>
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-2xl backdrop-blur-sm">
+          {icon}
+        </div>
       </div>
     </div>
   );
