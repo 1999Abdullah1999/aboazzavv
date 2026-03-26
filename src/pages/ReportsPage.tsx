@@ -7,6 +7,7 @@ import { getCompanies, getCompanyBalance, getCompanyStatement, getExpenses, getP
 import type { Company, Expense, Trip, Truck } from '../types';
 import { exportToCSV } from '../utils/exportCSV';
 import { printReport } from '../utils/printReport';
+import { shareReportAsImage } from '../utils/shareReport';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { useToast } from '../contexts/ToastContext';
 
@@ -30,6 +31,7 @@ export default function ReportsPage() {
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [summary, setSummary] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
     void Promise.all([getTrucks(), getCompanies()])
@@ -256,8 +258,25 @@ export default function ReportsPage() {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-bold text-gray-900 dark:text-white">{resultTitle}</h3>
               <div className="flex gap-2 no-print">
-                <Button variant="outline" onClick={() => printReport(resultTitle, summary, rows)}>🖨️ طباعة / تصدير</Button>
-                <Button variant="outline" onClick={() => exportToCSV(rows, resultTitle.split(' ').join('_'))}>📥 تصدير CSV</Button>
+                <Button variant="outline" onClick={() => printReport(resultTitle, summary, rows)}>🖨️ طباعة</Button>
+                <Button
+                  variant="outline"
+                  loading={sharing}
+                  onClick={async () => {
+                    setSharing(true);
+                    try {
+                      await shareReportAsImage(resultTitle, summary, rows);
+                      showToast('تم تصدير التقرير كصورة ✅', 'success');
+                    } catch (err: any) {
+                      if (err?.name !== 'AbortError') {
+                        showToast('تم تحميل الصورة 📥', 'success');
+                      }
+                    } finally {
+                      setSharing(false);
+                    }
+                  }}
+                >📤 مشاركة صورة</Button>
+                <Button variant="outline" onClick={() => exportToCSV(rows, resultTitle.split(' ').join('_'))}>📥 CSV</Button>
               </div>
             </div>
           </CardHeader>

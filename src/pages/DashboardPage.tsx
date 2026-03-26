@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
@@ -10,6 +10,42 @@ import { getDashboardStats, getLastExpenses, getLastTrips } from '../services/st
 import type { DashboardStats, Expense, Trip } from '../types';
 import { EXPENSE_TYPE_LABELS } from '../utils/constants';
 import { formatArabicDate, formatCurrency, formatDate, formatNumber } from '../utils/formatters';
+
+type Period = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
+
+const PERIOD_LABELS: Record<Period, string> = {
+  daily: '📅 يومي',
+  weekly: '📆 أسبوعي',
+  monthly: '🗓️ شهري',
+  yearly: '📊 سنوي',
+  all: '🌐 الكل',
+};
+
+function getDateRange(period: Period): { from?: string; to?: string } {
+  const now = new Date();
+  const to = now.toISOString().split('T')[0];
+  switch (period) {
+    case 'daily':
+      return { from: to, to };
+    case 'weekly': {
+      const weekAgo = new Date(now);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return { from: weekAgo.toISOString().split('T')[0], to };
+    }
+    case 'monthly': {
+      const monthAgo = new Date(now);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return { from: monthAgo.toISOString().split('T')[0], to };
+    }
+    case 'yearly': {
+      const yearAgo = new Date(now);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return { from: yearAgo.toISOString().split('T')[0], to };
+    }
+    default:
+      return {};
+  }
+}
 
 const CACHE_KEY = 'cachedDashboardData';
 const CACHE_TIME_KEY = 'cacheTime';
@@ -77,6 +113,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const cached = getCache();
+  const [period, setPeriod] = useState<Period>('all');
   const [stats, setStats] = useState<DashboardStats | null>(cached?.stats ?? null);
   const [lastTrips, setLastTrips] = useState<Trip[]>(cached?.lastTrips ?? []);
   const [lastExpenses, setLastExpenses] = useState<Expense[]>(cached?.lastExpenses ?? []);
@@ -86,13 +123,16 @@ export default function DashboardPage() {
   useEffect(() => {
     let mounted = true;
     const loadData = async () => {
-      const hasFreshCache = cached && !isCacheStale();
+      const range = getDateRange(period);
+      const isAll = period === 'all';
+      const hasFreshCache = isAll && cached && !isCacheStale();
+
       if (!hasFreshCache) {
-        if (!cached) setLoading(true);
+        if (!cached || !isAll) setLoading(true);
         setError('');
         try {
           const [statsData, tripsData, expensesData] = await Promise.all([
-            getDashboardStats(),
+            getDashboardStats(range.from, range.to),
             getLastTrips(5),
             getLastExpenses(5),
           ]);
@@ -100,7 +140,7 @@ export default function DashboardPage() {
           setStats(statsData);
           setLastTrips(tripsData);
           setLastExpenses(expensesData);
-          saveCache({ stats: statsData, lastTrips: tripsData, lastExpenses: expensesData });
+          if (isAll) saveCache({ stats: statsData, lastTrips: tripsData, lastExpenses: expensesData });
         } catch {
           if (!mounted) return;
           if (!cached) setError('حصل خطأ أثناء تحميل بيانات الرئيسية');
@@ -111,7 +151,7 @@ export default function DashboardPage() {
     };
     void loadData();
     return () => { mounted = false; };
-  }, []);
+  }, [period]);
 
   if (loading) {
     return <div className="p-4 md:p-6"><LoadingSpinner size="lg" /></div>;
@@ -164,6 +204,23 @@ export default function DashboardPage() {
             💸 مصروف جديد
           </button>
         </div>
+      </section>
+
+      {/* Period Selector */}
+      <section className="flex flex-wrap gap-2">
+        {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPeriod(p)}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+              period === p
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            {PERIOD_LABELS[p]}
+          </button>
+        ))}
       </section>
 
       {/* Stat Cards */}

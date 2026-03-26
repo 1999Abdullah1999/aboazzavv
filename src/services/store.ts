@@ -280,13 +280,30 @@ export async function deletePayment(id: string): Promise<void> {
 }
 
 // ============ CALCULATION HELPERS ============
-export async function getDashboardStats(): Promise<DashboardStats> {
-  const [trucks, tripsData, expensesData, companiesData, paymentsData] = await Promise.all([
-    getTrucks(),
-    supabase.from('trips').select('truck_id, amount'),
-    supabase.from('expenses').select('truck_id, amount'),
+export async function getDashboardStats(dateFrom?: string, dateTo?: string): Promise<DashboardStats> {
+  const [trucks] = await Promise.all([getTrucks()]);
+
+  // Build queries with optional date filtering
+  let tripsQuery = supabase.from('trips').select('truck_id, company_id, amount, date');
+  let expensesQuery = supabase.from('expenses').select('truck_id, amount, date');
+  let paymentsQuery = supabase.from('company_payments').select('company_id, amount, date');
+
+  if (dateFrom) {
+    tripsQuery = tripsQuery.gte('date', dateFrom);
+    expensesQuery = expensesQuery.gte('date', dateFrom);
+    paymentsQuery = paymentsQuery.gte('date', dateFrom);
+  }
+  if (dateTo) {
+    tripsQuery = tripsQuery.lte('date', dateTo);
+    expensesQuery = expensesQuery.lte('date', dateTo);
+    paymentsQuery = paymentsQuery.lte('date', dateTo);
+  }
+
+  const [tripsData, expensesData, companiesData, paymentsData] = await Promise.all([
+    tripsQuery,
+    expensesQuery,
     supabase.from('companies').select('id, previous_balance'),
-    supabase.from('company_payments').select('company_id, amount'),
+    paymentsQuery,
   ]);
 
   const trips = tripsData.data || [];
@@ -298,11 +315,9 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
   const netProfit = totalIncome - totalExpenses;
 
-  // Company debts
+  // Company debts (based on filtered trips/payments)
   const companyTripsMap: Record<string, number> = {};
-  // We need trips by company_id
-  const { data: companyTrips } = await supabase.from('trips').select('company_id, amount').not('company_id', 'is', null);
-  (companyTrips || []).forEach(t => {
+  trips.forEach(t => {
     if (t.company_id) {
       companyTripsMap[t.company_id] = (companyTripsMap[t.company_id] || 0) + (t.amount || 0);
     }
@@ -315,7 +330,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
   let totalCompanyDebt = 0;
   companies.forEach(c => {
-    const due = (c.previous_balance || 0) + (companyTripsMap[c.id] || 0);
+    const due = (dateFrom ? 0 : (c.previous_balance || 0)) + (companyTripsMap[c.id] || 0);
     const paid = companyPaymentsMap[c.id] || 0;
     const remaining = due - paid;
     if (remaining > 0) totalCompanyDebt += remaining;
