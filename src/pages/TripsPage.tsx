@@ -5,7 +5,8 @@ import Select from '../components/app-ui/Select';
 import Badge from '../components/app-ui/Badge';
 import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import PageSkeleton from '../components/layout/PageSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 import TripFormModal from '../components/trips/TripFormModal';
 import { deleteTrip, getCompanies, getTrips, getTrucks } from '../services/store';
 import type { Company, Trip, Truck } from '../types';
@@ -105,15 +106,19 @@ export default function TripsPage() {
     }
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading) return <PageSkeleton variant="table" />;
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <StaggeredList className="p-4 md:p-6 space-y-4">
+      <StaggeredItem>
       <PageHeader
         title="النقلات"
         action={<Button variant="success" onClick={() => { setEditingTrip(null); setModalOpen(true); }}>➕ إضافة نقلة</Button>}
       />
 
+      </StaggeredItem>
+
+      <StaggeredItem>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
         <Select
           label="العربية"
@@ -153,6 +158,7 @@ export default function TripsPage() {
           </Button>
         </div>
       </div>
+      </StaggeredItem>
 
       {sortedTrips.length === 0 ? (
         <EmptyState icon="🔄" message="لا توجد نقلات" />
@@ -242,6 +248,6 @@ export default function TripsPage() {
         title="هل أنت متأكد من الحذف؟"
         message="الحذف نهائي ومش هينفع ترجعه"
       />
-    </div>
+    </StaggeredList>
   );
 }

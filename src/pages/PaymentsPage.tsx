@@ -4,7 +4,8 @@ import Button from '../components/app-ui/Button';
 import Select from '../components/app-ui/Select';
 import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import PageSkeleton from '../components/layout/PageSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 import PaymentFormModal from '../components/payments/PaymentFormModal';
 import { deletePayment, getCompanies, getPayments } from '../services/store';
 import type { Company, CompanyPayment } from '../types';
@@ -70,15 +71,19 @@ export default function PaymentsPage() {
     }
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading) return <PageSkeleton variant="table" />;
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <StaggeredList className="p-4 md:p-6 space-y-4">
+      <StaggeredItem>
       <PageHeader
         title="مدفوعات الشركات"
         action={<Button onClick={() => { setEditingPayment(null); setModalOpen(true); }}>➕ تسجيل دفعة</Button>}
       />
 
+      </StaggeredItem>
+
+      <StaggeredItem>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
         <Select
           label="الشركة"
@@ -110,6 +115,7 @@ export default function PaymentsPage() {
           </Button>
         </div>
       </div>
+      </StaggeredItem>
 
       {payments.length === 0 ? (
         <EmptyState icon="💳" message="لا توجد مدفوعات" />
@@ -185,6 +191,6 @@ export default function PaymentsPage() {
         title="هل أنت متأكد من الحذف؟"
         message="الحذف نهائي ومش هينفع ترجعه"
       />
-    </div>
+    </StaggeredList>
   );
 }
