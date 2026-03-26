@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
 import StatCard from '../components/app-ui/StatCard';
 import Badge from '../components/app-ui/Badge';
 import { getDashboardStats, getLastExpenses, getLastTrips } from '../services/store';
 import type { DashboardStats, Expense, Trip } from '../types';
 import { EXPENSE_TYPE_LABELS } from '../utils/constants';
 import { formatArabicDate, formatCurrency, formatDate, formatNumber } from '../utils/formatters';
+import DashboardSkeleton from '../components/layout/DashboardSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 
 type Period = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
 
@@ -154,7 +155,7 @@ export default function DashboardPage() {
   }, [period]);
 
   if (loading) {
-    return <div className="p-4 md:p-6"><LoadingSpinner size="lg" /></div>;
+    return <DashboardSkeleton />;
   }
 
   if (error || !stats) {
@@ -179,8 +180,9 @@ export default function DashboardPage() {
     : '0';
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <StaggeredList className="space-y-6 p-4 md:p-6">
       {/* Header */}
+      <StaggeredItem>
       <section className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
@@ -205,8 +207,10 @@ export default function DashboardPage() {
           </button>
         </div>
       </section>
+      </StaggeredItem>
 
       {/* Period Selector */}
+      <StaggeredItem>
       <section className="flex flex-wrap gap-2">
         {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
           <button
@@ -222,8 +226,10 @@ export default function DashboardPage() {
           </button>
         ))}
       </section>
+      </StaggeredItem>
 
       {/* Stat Cards */}
+      <StaggeredItem>
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard icon="💰" title="إجمالي الدخل" value={formatCurrency(stats.totalIncome)} color="green" />
         <StatCard icon="💸" title="إجمالي المصروفات" value={formatCurrency(stats.totalExpenses)} color="red" />
@@ -236,8 +242,10 @@ export default function DashboardPage() {
         />
         <StatCard icon="🏢" title="مستحقات الشركات" value={formatCurrency(stats.totalCompanyDebt)} color="orange" />
       </section>
+      </StaggeredItem>
 
       {/* Charts Section */}
+      <StaggeredItem>
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         {/* Bar Chart - Truck Performance */}
         <Card className="xl:col-span-2">
@@ -309,8 +317,10 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
       </section>
+      </StaggeredItem>
 
       {/* Truck Summaries */}
+      <StaggeredItem>
       <section>
         <h2 className="mb-3 text-lg font-bold text-gray-900 dark:text-white">🚛 ملخص العربيات</h2>
         {stats.truckSummaries.length === 0 ? (
@@ -360,8 +370,10 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
+      </StaggeredItem>
 
       {/* Recent Activity */}
+      <StaggeredItem>
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Card>
           <CardHeader className="flex items-center justify-between">
@@ -455,6 +467,7 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
       </section>
-    </div>
+      </StaggeredItem>
+    </StaggeredList>
   );
 }
