@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import Button from '../components/app-ui/Button';
+import Input from '../components/app-ui/Input';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { getAppSettings, updateAppSettings } from '../services/store';

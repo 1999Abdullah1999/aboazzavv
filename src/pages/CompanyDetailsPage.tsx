@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Button from '../components/ui/Button';
-import Tabs from '../components/ui/Tabs';
-import DateRangeFilter from '../components/ui/DateRangeFilter';
-import EmptyState from '../components/ui/EmptyState';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import StatCard from '../components/ui/StatCard';
-import ConfirmDialog from '../components/ui/ConfirmDialog';
+import Button from '../components/app-ui/Button';
+import Tabs from '../components/app-ui/Tabs';
+import DateRangeFilter from '../components/app-ui/DateRangeFilter';
+import EmptyState from '../components/app-ui/EmptyState';
+import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import StatCard from '../components/app-ui/StatCard';
+import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import TripFormModal from '../components/trips/TripFormModal';
 import PaymentFormModal from '../components/payments/PaymentFormModal';
 import {

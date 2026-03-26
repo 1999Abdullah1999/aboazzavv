@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import PageHeader from '../components/ui/PageHeader';
-import { Card, CardBody, CardHeader } from '../components/ui/Card';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
+import PageHeader from '../components/app-ui/PageHeader';
+import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
+import Input from '../components/app-ui/Input';
+import Button from '../components/app-ui/Button';
 import { getAppSettings, updateAppSettings } from '../services/store';
 import type { AppSettings } from '../types';
 import { useToast } from '../contexts/ToastContext';

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import Modal from '../ui/Modal';
-import Input from '../ui/Input';
-import Select from '../ui/Select';
-import Textarea from '../ui/Textarea';
-import Button from '../ui/Button';
+import Modal from '../app-ui/Modal';
+import Input from '../app-ui/Input';
+import Select from '../app-ui/Select';
+import Textarea from '../app-ui/Textarea';
+import Button from '../app-ui/Button';
 import { addTrip, getCompanies, getTrucks, updateTrip } from '../../services/store';
 import type { Company, Trip, TripType, Truck } from '../../types';
 import { TRIP_TYPE_LABELS } from '../../utils/constants';

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import Modal from '../ui/Modal';
-import Input from '../ui/Input';
-import Textarea from '../ui/Textarea';
-import Button from '../ui/Button';
+import Modal from '../app-ui/Modal';
+import Input from '../app-ui/Input';
+import Textarea from '../app-ui/Textarea';
+import Button from '../app-ui/Button';
 import { addCompany, updateCompany } from '../../services/store';
 import type { Company } from '../../types';
 import { useToast } from '../../contexts/ToastContext';

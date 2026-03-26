@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import PageHeader from '../components/ui/PageHeader';
-import { Card, CardBody } from '../components/ui/Card';
-import EmptyState from '../components/ui/EmptyState';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import Button from '../components/ui/Button';
+import PageHeader from '../components/app-ui/PageHeader';
+import { Card, CardBody } from '../components/app-ui/Card';
+import EmptyState from '../components/app-ui/EmptyState';
+import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import Button from '../components/app-ui/Button';
 import { formatCurrency, formatDate } from '../utils/formatters';
 
 interface CompanyDue {

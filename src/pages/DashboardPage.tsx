@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader } from '../components/ui/Card';
-import EmptyState from '../components/ui/EmptyState';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import StatCard from '../components/ui/StatCard';
-import Badge from '../components/ui/Badge';
+import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
+import EmptyState from '../components/app-ui/EmptyState';
+import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import StatCard from '../components/app-ui/StatCard';
+import Badge from '../components/app-ui/Badge';
 import { getDashboardStats, getLastExpenses, getLastTrips } from '../services/store';
 import type { DashboardStats, Expense, Trip } from '../types';
 import { EXPENSE_TYPE_LABELS } from '../utils/constants';

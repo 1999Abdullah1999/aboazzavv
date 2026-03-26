@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import Tabs from '../components/ui/Tabs';
+import Button from '../components/app-ui/Button';
+import Input from '../components/app-ui/Input';
+import Tabs from '../components/app-ui/Tabs';
 import { useToast } from '../contexts/ToastContext';
 import { getAppSettings, updatePassword } from '../services/store';
 

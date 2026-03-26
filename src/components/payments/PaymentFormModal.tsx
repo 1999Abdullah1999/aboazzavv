@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import Modal from '../ui/Modal';
-import Input from '../ui/Input';
-import Select from '../ui/Select';
-import Textarea from '../ui/Textarea';
-import Button from '../ui/Button';
+import Modal from '../app-ui/Modal';
+import Input from '../app-ui/Input';
+import Select from '../app-ui/Select';
+import Textarea from '../app-ui/Textarea';
+import Button from '../app-ui/Button';
 import { addPayment, getCompanies, updatePayment } from '../../services/store';
 import type { Company, CompanyPayment, PaymentMethod } from '../../types';
 import { PAYMENT_METHOD_LABELS } from '../../utils/constants';

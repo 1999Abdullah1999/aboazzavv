@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import PageHeader from '../components/ui/PageHeader';
-import Button from '../components/ui/Button';
-import Select from '../components/ui/Select';
-import { Card, CardBody, CardHeader } from '../components/ui/Card';
+import PageHeader from '../components/app-ui/PageHeader';
+import Button from '../components/app-ui/Button';
+import Select from '../components/app-ui/Select';
+import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
 import { getCompanies, getCompanyBalance, getCompanyStatement, getExpenses, getPayments, getTrips, getTrucks } from '../services/store';
 import type { Company, Expense, Trip, Truck } from '../types';
 import { exportToCSV } from '../utils/exportCSV';

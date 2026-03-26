@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import Modal from '../ui/Modal';
-import Input from '../ui/Input';
-import Select from '../ui/Select';
-import Textarea from '../ui/Textarea';
-import Button from '../ui/Button';
+import Modal from '../app-ui/Modal';
+import Input from '../app-ui/Input';
+import Select from '../app-ui/Select';
+import Textarea from '../app-ui/Textarea';
+import Button from '../app-ui/Button';
 import { addExpense, getTrucks, updateExpense } from '../../services/store';
 import type { Expense, ExpenseType, Truck } from '../../types';
 import { EXPENSE_TYPE_LABELS } from '../../utils/constants';
