@@ -113,6 +113,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const cached = getCache();
+  const [period, setPeriod] = useState<Period>('all');
   const [stats, setStats] = useState<DashboardStats | null>(cached?.stats ?? null);
   const [lastTrips, setLastTrips] = useState<Trip[]>(cached?.lastTrips ?? []);
   const [lastExpenses, setLastExpenses] = useState<Expense[]>(cached?.lastExpenses ?? []);
@@ -122,13 +123,16 @@ export default function DashboardPage() {
   useEffect(() => {
     let mounted = true;
     const loadData = async () => {
-      const hasFreshCache = cached && !isCacheStale();
+      const range = getDateRange(period);
+      const isAll = period === 'all';
+      const hasFreshCache = isAll && cached && !isCacheStale();
+
       if (!hasFreshCache) {
-        if (!cached) setLoading(true);
+        if (!cached || !isAll) setLoading(true);
         setError('');
         try {
           const [statsData, tripsData, expensesData] = await Promise.all([
-            getDashboardStats(),
+            getDashboardStats(range.from, range.to),
             getLastTrips(5),
             getLastExpenses(5),
           ]);
@@ -136,7 +140,7 @@ export default function DashboardPage() {
           setStats(statsData);
           setLastTrips(tripsData);
           setLastExpenses(expensesData);
-          saveCache({ stats: statsData, lastTrips: tripsData, lastExpenses: expensesData });
+          if (isAll) saveCache({ stats: statsData, lastTrips: tripsData, lastExpenses: expensesData });
         } catch {
           if (!mounted) return;
           if (!cached) setError('حصل خطأ أثناء تحميل بيانات الرئيسية');
@@ -147,7 +151,7 @@ export default function DashboardPage() {
     };
     void loadData();
     return () => { mounted = false; };
-  }, []);
+  }, [period]);
 
   if (loading) {
     return <div className="p-4 md:p-6"><LoadingSpinner size="lg" /></div>;
