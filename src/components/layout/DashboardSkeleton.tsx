@@ -4,7 +4,7 @@ const shimmer = {
   initial: { backgroundPosition: '200% 0' },
   animate: {
     backgroundPosition: '-200% 0',
-    transition: { repeat: Infinity, duration: 1.8, ease: 'linear' },
+    transition: { repeat: Infinity, duration: 1.8, ease: 'linear' as const },
   },
 };
 
