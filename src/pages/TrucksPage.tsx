@@ -6,7 +6,8 @@ import PageHeader from '../components/app-ui/PageHeader';
 import Badge from '../components/app-ui/Badge';
 import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import PageSkeleton from '../components/layout/PageSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 import TruckFormModal from '../components/trucks/TruckFormModal';
 import { useToast } from '../contexts/ToastContext';
 import { deleteTruck, getTruckProfit, getTrucks } from '../services/store';
@@ -85,11 +86,12 @@ export default function TrucksPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner size="lg" />;
+    return <PageSkeleton variant="cards" />;
   }
 
   return (
-    <div className="p-4 md:p-6">
+    <StaggeredList className="p-4 md:p-6 space-y-4">
+      <StaggeredItem>
       <PageHeader
         title="العربيات"
         subtitle={`إجمالي الربح الحالي: ${formatCurrency(totalProfit)}`}
@@ -106,6 +108,7 @@ export default function TrucksPage() {
           </Button>
         }
       />
+      </StaggeredItem>
 
       {error ? (
         <Card>
@@ -128,7 +131,8 @@ export default function TrucksPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {trucks.map((truck) => (
-            <Card key={truck.id}>
+            <StaggeredItem key={truck.id}>
+            <Card>
               <CardHeader className="flex items-center justify-between gap-2">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">🚛 {truck.name}</h3>
                 <Badge color={getStatusColor(truck.status)}>{TRUCK_STATUS_LABELS[truck.status] || truck.status}</Badge>
@@ -163,6 +167,7 @@ export default function TrucksPage() {
                 </Button>
               </CardFooter>
             </Card>
+            </StaggeredItem>
           ))}
         </div>
       )}
@@ -182,6 +187,6 @@ export default function TrucksPage() {
         onSaved={loadData}
         truck={editingTruck}
       />
-    </div>
+    </StaggeredList>
   );
 }
