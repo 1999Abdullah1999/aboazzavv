@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
 import StatCard from '../components/app-ui/StatCard';
 import Badge from '../components/app-ui/Badge';
 import { getDashboardStats, getLastExpenses, getLastTrips } from '../services/store';
 import type { DashboardStats, Expense, Trip } from '../types';
 import { EXPENSE_TYPE_LABELS } from '../utils/constants';
 import { formatArabicDate, formatCurrency, formatDate, formatNumber } from '../utils/formatters';
+import DashboardSkeleton from '../components/layout/DashboardSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 
 type Period = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
 
@@ -154,7 +155,7 @@ export default function DashboardPage() {
   }, [period]);
 
   if (loading) {
-    return <div className="p-4 md:p-6"><LoadingSpinner size="lg" /></div>;
+    return <DashboardSkeleton />;
   }
 
   if (error || !stats) {
