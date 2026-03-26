@@ -206,6 +206,23 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      {/* Period Selector */}
+      <section className="flex flex-wrap gap-2">
+        {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPeriod(p)}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+              period === p
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            {PERIOD_LABELS[p]}
+          </button>
+        ))}
+      </section>
+
       {/* Stat Cards */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard icon="💰" title="إجمالي الدخل" value={formatCurrency(stats.totalIncome)} color="green" />
