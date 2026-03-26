@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import AnimatedOutlet from './AnimatedOutlet';
 import TripFormModal from '../trips/TripFormModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -78,7 +79,7 @@ export default function AppLayout() {
         <Sidebar />
         <div className="flex-1 min-w-0 overflow-auto">
           <main>
-            <Outlet />
+            <AnimatedOutlet />
           </main>
         </div>
       </div>
@@ -100,7 +101,7 @@ export default function AppLayout() {
           </header>
 
           <main className="pt-12 pb-20">
-            <Outlet />
+            <AnimatedOutlet />
           </main>
 
           {isMoreMenuOpen ? (
@@ -209,7 +210,7 @@ export default function AppLayout() {
           </header>
 
           <main className="pt-12">
-            <Outlet />
+            <AnimatedOutlet />
           </main>
 
           {isMobileSidebarOpen ? (
