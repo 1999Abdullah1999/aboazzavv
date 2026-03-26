@@ -5,7 +5,8 @@ import Select from '../components/app-ui/Select';
 import Badge from '../components/app-ui/Badge';
 import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import PageSkeleton from '../components/layout/PageSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 import ExpenseFormModal from '../components/expenses/ExpenseFormModal';
 import { deleteExpense, getExpenses, getTrucks } from '../services/store';
 import type { Expense, ExpenseType, Truck } from '../types';
@@ -73,15 +74,19 @@ export default function ExpensesPage() {
     }
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading) return <PageSkeleton variant="table" />;
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <StaggeredList className="p-4 md:p-6 space-y-4">
+      <StaggeredItem>
       <PageHeader
         title="المصروفات"
         action={<Button variant="danger" onClick={() => { setEditingExpense(null); setModalOpen(true); }}>➕ إضافة مصروف</Button>}
       />
 
+      </StaggeredItem>
+
+      <StaggeredItem>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
         <Select
           label="العربية"
@@ -121,6 +126,7 @@ export default function ExpensesPage() {
           </Button>
         </div>
       </div>
+      </StaggeredItem>
 
       {expenses.length === 0 ? (
         <EmptyState icon="💸" message="لا توجد مصروفات" />
@@ -202,6 +208,6 @@ export default function ExpensesPage() {
         title="هل أنت متأكد من الحذف؟"
         message="الحذف نهائي ومش هينفع ترجعه"
       />
-    </div>
+    </StaggeredList>
   );
 }

@@ -6,7 +6,8 @@ import Button from '../components/app-ui/Button';
 import { Card, CardBody, CardFooter, CardHeader } from '../components/app-ui/Card';
 import ConfirmDialog from '../components/app-ui/ConfirmDialog';
 import EmptyState from '../components/app-ui/EmptyState';
-import LoadingSpinner from '../components/app-ui/LoadingSpinner';
+import PageSkeleton from '../components/layout/PageSkeleton';
+import { StaggeredList, StaggeredItem } from '../components/layout/StaggeredList';
 import CompanyFormModal from '../components/companies/CompanyFormModal';
 import PaymentFormModal from '../components/payments/PaymentFormModal';
 import { deleteCompany, getCompanies, getCompanyBalance } from '../services/store';
@@ -70,10 +71,11 @@ export default function CompaniesPage() {
     }
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading) return <PageSkeleton variant="cards" />;
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <StaggeredList className="p-4 md:p-6 space-y-4">
+      <StaggeredItem>
       <PageHeader
         title="الشركات"
         action={
@@ -88,7 +90,11 @@ export default function CompaniesPage() {
         }
       />
 
+      </StaggeredItem>
+
+      <StaggeredItem>
       <SearchInput value={search} onChange={setSearch} placeholder="🔍 ابحث عن شركة..." />
+      </StaggeredItem>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -103,7 +109,8 @@ export default function CompaniesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((company) => (
-            <Card key={company.id}>
+            <StaggeredItem key={company.id}>
+            <Card>
               <CardHeader>
                 <h3 className="font-bold text-lg text-gray-900 dark:text-white">🏢 {company.name}</h3>
               </CardHeader>
@@ -140,6 +147,7 @@ export default function CompaniesPage() {
                 </Button>
               </CardFooter>
             </Card>
+            </StaggeredItem>
           ))}
         </div>
       )}
@@ -165,6 +173,6 @@ export default function CompaniesPage() {
         title="هل أنت متأكد من الحذف؟"
         message="الحذف نهائي ومش هينفع ترجعه"
       />
-    </div>
+    </StaggeredList>
   );
 }
