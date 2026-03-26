@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Card, CardBody, CardHeader } from '../components/app-ui/Card';
@@ -10,6 +10,42 @@ import { getDashboardStats, getLastExpenses, getLastTrips } from '../services/st
 import type { DashboardStats, Expense, Trip } from '../types';
 import { EXPENSE_TYPE_LABELS } from '../utils/constants';
 import { formatArabicDate, formatCurrency, formatDate, formatNumber } from '../utils/formatters';
+
+type Period = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all';
+
+const PERIOD_LABELS: Record<Period, string> = {
+  daily: '📅 يومي',
+  weekly: '📆 أسبوعي',
+  monthly: '🗓️ شهري',
+  yearly: '📊 سنوي',
+  all: '🌐 الكل',
+};
+
+function getDateRange(period: Period): { from?: string; to?: string } {
+  const now = new Date();
+  const to = now.toISOString().split('T')[0];
+  switch (period) {
+    case 'daily':
+      return { from: to, to };
+    case 'weekly': {
+      const weekAgo = new Date(now);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return { from: weekAgo.toISOString().split('T')[0], to };
+    }
+    case 'monthly': {
+      const monthAgo = new Date(now);
+      monthAgo.setMonth(monthAgo.getMonth() - 1);
+      return { from: monthAgo.toISOString().split('T')[0], to };
+    }
+    case 'yearly': {
+      const yearAgo = new Date(now);
+      yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      return { from: yearAgo.toISOString().split('T')[0], to };
+    }
+    default:
+      return {};
+  }
+}
 
 const CACHE_KEY = 'cachedDashboardData';
 const CACHE_TIME_KEY = 'cacheTime';
